@@ -3,7 +3,6 @@ library(shiny)
 library(shinydashboard)
 library(shinyBS)
 library(boastUtils)
-library(ggplot2)
 library(shinyWidgets)
 library(shinyalert)
 
@@ -11,38 +10,38 @@ GRID_SIZE <- 3
 TILE_COUNT <- GRID_SIZE ^ 2
 
 # App Meta Data----------------------------------------------------------------
-APP_TITLE  <<- "[Time Series Game]"
+APP_TITLE  <<- "Time Series Game"
 APP_DESCP  <<- paste(
-  "Description of the app",
-  "use multiple lines to keep the description legible."
+  "Time Series Game",
+  "Interactive tic tac toe game to test knowledge of various time series concepts."
 )
 # End App Meta Data------------------------------------------------------------
 
-# Load additional dependencies and setup functions
-# source("global.R")
-
 # Define UI for App
 ui <- list(
-  tags$head(
-    tags$link(rel = "stylesheet", type = "text/css",
-    href = "https://educationshinyappteam.github.io/Style_Guide/theme/boast.css")
-  ),
   ## Create the app page
   dashboardPage(
     skin = "purple",
     ### Create the app header
   
     dashboardHeader(
-      title = "Time Series Game", # You may use a shortened form of the title here
+      title = "Time Series Game",
+      titleWidth = 250,
       tags$li(class = "dropdown",
               tags$a(href='https://shinyapps.science.psu.edu/',
-                     icon("home")))
+                     icon("home"))),
+      tags$li(
+        class = "dropdown",
+        tags$a(target = "_blank", icon("comments"),
+        href = "https://pennstate.qualtrics.com/jfe/form/SV_7TLIkFtJEJ7fEPz?appName=[app_repo_name]"
+        )
+      )
     ),
     ### Create the sidebar/left navigation menu
     dashboardSidebar(
       sidebarMenu(
-        id = "tabs",
-        menuItem("Overview", tabName = "Overview", icon = icon("dashboard")),
+        id = "pages",
+        menuItem("Overview", tabName = "Overview", icon = icon("tachometer-alt")),
         menuItem("Prerequisites", tabName = "Prerequisites", icon = icon("book")),
         menuItem("Game", tabName = "game", icon = icon("gamepad")),
         menuItem("References", tabName = "References", icon = icon("leanpub"))
@@ -60,8 +59,9 @@ ui <- list(
           tabName = "Overview",
           withMathJax(),
           h1("Time Series Tic Tac Toe"), # This should be the full name.
-          p("The goal of this app is to test your knowledge of time series analysis. You should
-            use the  time series concepts reviewed in this chapter to complete the game and win against the computer."),
+          p("The goal of this app is to test your knowledge of time series 
+          analysis. You should use the  time series concepts reviewed in this 
+            chapter to complete the game and win against the computer."),
           h2("Instructions"),
           p("To play the game:"),
           tags$ol(
@@ -74,8 +74,10 @@ ui <- list(
             tags$li("Click the GO! button to go the game page."),
             tags$li("Select whether you'll play as the O's or the X's."),
             tags$li("Select the square that you want to place your marker."),
-            tags$li("Answer the question that is given. If you're correct, you get that square. If not, the computer will."),
-            tags$li("Win by filling a row, a column, or a main diagonal with your mark (X's or O's).")
+            tags$li("Answer the question that is given. If you're correct, you 
+                    get that square. If not, the computer will."),
+            tags$li("Win by filling a row, a column, or a main diagonal with 
+                    your mark (X's or O's).")
           ),
           ##### Go Button--location will depend on your goals
           div(
@@ -111,46 +113,56 @@ ui <- list(
             p("In order to get the most out of this app, please review the
             following:"),
             tags$ul(
-                strong(tags$li("Stationarity:")),
-                p("Diagnostics for stationarity include looking for constant mean 
+                tags$li(strong("Stationarity")),
+                tags$li("Diagnostics for stationarity include looking for constant mean 
                   (or, trend) and variance over time"
                 ),
-                p("Constant mean is associated with data that does not have any 
+                tags$li("Constant mean is associated with data that does not have any 
                   sort of vertical (typically linear) trend over time."
                 ),
-                p("Seasonality could also be apparent in the mean structure. Recall 
+                tags$li("Seasonality could also be apparent in the mean structure. Recall 
                   that seasonal ARIMA cannot explain a seasonal trend, only seasonal 
                   correlations (ARIMA models work to explain correlation structure 
                   of a time series AFTER the mean and variance are constant)."
                 ),
-                p("Constant variance is associated with data whose vertical spread 
-                  (in the valleys and peaks) is constant over the duration of the time series."
+                tags$li("Constant variance is associated with data whose vertical 
+                spread (in the valleys and peaks) is constant over the duration 
+                  of the time series."
                 ),
-                strong(tags$li("Autocorrelation Functions of Stationary Time Series:")),
-                p("We typically trust the dashed lines in the autocorrelation function 
-                  (ACF) plots to be the significance cut-off bounds for any lag's correlation"
+                tags$li(strong("Autocorrelation Functions of Stationary 
+                               Time Series")),
+                tags$li("We typically trust the dashed lines in the autocorrelation 
+                function (ACF) plots to be the significance cut-off bounds for 
+                  any lag's correlation"
                 ),
-                p("In a model with non-zero autoregressive (AR) and moving average (MA) parts, 
-                  there is no logical interpretation for both ACFS cutting off, thus,"
+                tags$li("In a model with non-zero autoregressive (AR) and moving 
+                average (MA) parts, there is no logical interpretation for both 
+                  ACFS cutting off, thus,"
                 ),
                   tags$ul(
-                    tags$li("For AR(p) models, the ACF will tail off and the PACF will cut off after lag p."),
-                    tags$li("For MA(q) models, the ACF will cut off after lag q, and the PACF will tail off."),
-                    tags$li("For ARMA(p, q) models, both the ACF and the PACF will both tail off.")
+                    tags$li("For AR(p) models, the ACF will tail off and the 
+                            PACF will cut off after lag p."),
+                    tags$li("For MA(q) models, the ACF will cut off after lag q, 
+                            and the PACF will tail off."),
+                    tags$li("For ARMA(p, q) models, both the ACF and the PACF 
+                            will both tail off.")
                   ),
-                p("The ARMA subsets plot is not the best tool for determining ARMA(p,q) orders, and thus will 
-                  only be used as a tie breaker or guide after the ACF and PACF plots have been thoroughly inspected."),
-                strong(tags$li("Model Diagnostics:")),
-                p("The ARIMA model aims to forecast future values of a stationary 
-                  time series by estimating a mathematical function to explain the underlying
-                  correlation structure. For this reason, the ACF and PACF of the residuals 
-                  of the ARIMA model that has been fitted should not contain any significant 
+                tags$li("The ARMA subsets plot is not the best tool for determining 
+                ARMA(p,q) orders, and thus will only be used as a tie breaker or 
+                  guide after the ACF and PACF plots have been thoroughly inspected."),
+                strong(tags$li("Model Diagnostics")),
+                tags$li("The ARIMA model aims to forecast future values of a stationary 
+                  time series by estimating a mathematical function to explain 
+                  the underlying correlation structure. For this reason, the ACF 
+                  and PACF of the residuals of the ARIMA model that has been 
+                  fitted should not contain any significant 
                   remaining correlation."
                 ),
-                p("Though forecasting is the purpose for fitting an ARIMA model, looking at 
-                  the forecast itself (against future values that have been reserved) isnt the
-                  best way to assess the goodness of the model's fit, this is why we look at the 
-                  AIC and the ACF plots of the residuals of the model."
+                tags$li("Though forecasting is the purpose for fitting an ARIMA model, 
+                looking at the forecast itself (against future values that have 
+                been reserved) isnt the best way to assess the goodness of the 
+                model's fit, this is why we look at the AIC and the ACF plots of 
+                  the residuals of the model."
                 )
               )
           ),
@@ -204,14 +216,11 @@ ui <- list(
             )
           ), br(),br(),br(),
           fluidRow(
-            # column(width=12, offset = 6,
-            #        bsButton(inputId="reset", label="Start new game", style="primary")
-            # ),
             column(12,uiOutput("Feedback"))
           )
         ),
       
-        #### Set up the References Page-REQUIRED
+        #### Set up the References Page
         tabItem(
           tabName = "References",
           withMathJax(),
@@ -268,10 +277,10 @@ ui <- list(
 server <- function(input, output, session) {
   ## Define what each button does
   observeEvent(input$go1, {
-    updateTabItems(session, "tabs", "game")
+    updateTabItems(session, "pages", "game")
   })
   observeEvent(input$linkPreq, {
-    updateTabItems(session, "tabs", "Prerequisites")
+    updateTabItems(session, "pages", "Prerequisites")
   })
   
   
@@ -428,6 +437,7 @@ server <- function(input, output, session) {
           inputId = "ans",
           choices = list(df[index, "A"],
                          df[index, "B"]),
+          selected = character(0),
           checkIcon = list(
             yes = icon("check-square"),
             no = icon("square-o")
@@ -519,7 +529,7 @@ server <- function(input, output, session) {
   
   .generateStatement <- function(session, verb = NA, object = NA, description = NA) {
     if(is.na(object)){
-      object <- paste0("#shiny-tab-", session$input$tabs)
+      object <- paste0("#shiny-tab-", session$input$pages)
     } else {
       object <- paste0("#", object)
     }
@@ -536,7 +546,9 @@ server <- function(input, output, session) {
     return(rlocker::store(session, statement))   
   }
   
-  .generateAnsweredStatement <- function(session, verb = NA, object = NA, description = NA, interactionType = NA, response = NA, success = NA, completion = FALSE) {
+  .generateAnsweredStatement <- function(session, verb = NA, object = NA, 
+                  description = NA, interactionType = NA, 
+                  response = NA, success = NA, completion = FALSE) {
     statement <- rlocker::createStatement(list(
       verb = verb,
       object = list(
@@ -549,29 +561,17 @@ server <- function(input, output, session) {
         success = success,
         response = response,
         completion = completion
-        # extensions = list(
-        #   ref = "https://shinyapps.science.psu.edu/scoreMatrix", value = paste(as.data.frame(scoreMatrix), collapse = ", ")
-        #   )
       )
     )
     )
     
-    # print(statement)
     return(rlocker::store(session, statement))   
   }
-  
-  # Define navigation buttons
-  #observeEvent(input$go1, {
-  #updateTabItems(session, "tabs", "game")
-  #})
-  
-  
-  
-  
-  
+
   # Program the Reset Button
   observeEvent(input$reset, {
-    .generateStatement(session, object = "reset", verb = "interacted", description = "Game board has been reset.")
+    .generateStatement(session, object = "reset", verb = "interacted", 
+                       description = "Game board has been reset.")
     .gameReset()
   })
   
@@ -598,7 +598,10 @@ server <- function(input, output, session) {
         observeEvent(session$input[[id]], {
           activeBtn <<- id
           .boardBtn(id)
-          .generateStatement(session, object = activeBtn, verb = "interacted", description = paste0("Tile ", activeBtn, " selected. Rendering question: ", activeQuestion, "."))
+          .generateStatement(session, object = activeBtn, verb = "interacted", 
+                             description = paste0("Tile ", activeBtn, 
+                                                  " selected. Rendering question: ", 
+                                                  activeQuestion, "."))
         })
         
         index <<- index + 1
@@ -668,16 +671,19 @@ server <- function(input, output, session) {
     )
     
     if (.gameState == "win") {
-      .generateStatement(session, object = "game", verb = "completed", description = "Player has won the game.")
+      .generateStatement(session, object = "game", verb = "completed", 
+                         description = "Player has won the game.")
       confirmSweetAlert(
         session = session,
         inputId = "endGame",
         title = "You Win!",
-        text = "You've filled either a row, a column, or a main diagonal. Start over and play a new game.",
+        text = "You've filled either a row, a column, or a main diagonal. 
+        Start over and play a new game.",
         btn_labels = "Start Over"
       )
     } else if (.gameState == "lose") {
-      .generateStatement(session, object = "game", verb = "completed", description = "Player has lost the game.")
+      .generateStatement(session, object = "game", verb = "completed", 
+                         description = "Player has lost the game.")
       confirmSweetAlert(
         session = session,
         inputId = "endGame",
@@ -686,7 +692,8 @@ server <- function(input, output, session) {
         btn_labels = "Start Over"
       )
     } else if (.gameState == "draw") {
-      .generateStatement(session, object = "game", verb = "completed", description = "Game has ended in a draw.")
+      .generateStatement(session, object = "game", verb = "completed", 
+                         description = "Game has ended in a draw.")
       confirmSweetAlert(
         session = session,
         inputId = "endGame",
@@ -700,8 +707,8 @@ server <- function(input, output, session) {
                  disabled = TRUE)
   })
   
-  observeEvent(input$tabs, {
-    if (input$tabs == "game") {
+  observeEvent(input$pages, {
+    if (input$pages == "game") {
       if (!gameProgress) {
         shinyalert(
           title = "Player Select",
@@ -714,11 +721,13 @@ server <- function(input, output, session) {
         gameProgress <<- TRUE
       }
     }
-    .generateStatement(session, verb = "experienced", description = paste0("Navigated to ", input$tabs, " tab."))
+    .generateStatement(session, verb = "experienced", 
+                       description = paste0("Navigated to ", input$pages, " tab."))
   }, ignoreInit = TRUE)
   
   observeEvent(input$endGame, {
-    .generateStatement(session, object = "endGame", verb = "interacted", description = paste("Game has been reset."))
+    .generateStatement(session, object = "endGame", verb = "interacted", 
+                       description = paste("Game has been reset."))
     .gameReset()
   })
   
@@ -732,7 +741,8 @@ server <- function(input, output, session) {
       opponent <<- "X"
     }
     
-    .generateStatement(session, object = "shinyalert", verb = "interacted", description = paste0("User has selected player: ", player))
+    .generateStatement(session, object = "shinyalert", verb = "interacted", 
+                       description = paste0("User has selected player: ", player))
     
     output$player <- renderUI({
       return(paste0("You are playing as ", player, "."))
