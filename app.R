@@ -527,51 +527,12 @@ server <- function(input, output, session) {
                  disabled = TRUE)
   }
   
-  .generateStatement <- function(session, verb = NA, object = NA, description = NA) {
-    if(is.na(object)){
-      object <- paste0("#shiny-tab-", session$input$pages)
-    } else {
-      object <- paste0("#", object)
-    }
-    
-    statement <- rlocker::createStatement(list(
-      verb =  verb,
-      object = list(
-        id = paste0(boastUtils::getCurrentAddress(session), object),
-        name = paste0(APP_TITLE),
-        description = description
-      )
-    ))
-    # print(statement)
-    return(rlocker::store(session, statement))   
-  }
   
-  .generateAnsweredStatement <- function(session, verb = NA, object = NA, 
-                  description = NA, interactionType = NA, 
-                  response = NA, success = NA, completion = FALSE) {
-    statement <- rlocker::createStatement(list(
-      verb = verb,
-      object = list(
-        id = paste0(getCurrentAddress(session), "#", object),
-        name = paste0(APP_TITLE),
-        description = paste0("Question ", activeQuestion, ": ", description),
-        interactionType = interactionType
-      ),
-      result = list(
-        success = success,
-        response = response,
-        completion = completion
-      )
-    )
-    )
-    
-    return(rlocker::store(session, statement))   
-  }
-
+  
+ 
   # Program the Reset Button
   observeEvent(input$reset, {
-    .generateStatement(session, object = "reset", verb = "interacted", 
-                       description = "Game board has been reset.")
+    
     .gameReset()
   })
   
@@ -598,10 +559,7 @@ server <- function(input, output, session) {
         observeEvent(session$input[[id]], {
           activeBtn <<- id
           .boardBtn(id)
-          .generateStatement(session, object = activeBtn, verb = "interacted", 
-                             description = paste0("Tile ", activeBtn, 
-                                                  " selected. Rendering question: ", 
-                                                  activeQuestion, "."))
+        
         })
         
         index <<- index + 1
@@ -659,20 +617,10 @@ server <- function(input, output, session) {
     completion <- ifelse(.gameState == "continue", FALSE, TRUE)
     interactionType <- ifelse(gameSet[index,]$format == "numeric", "numeric", "choice")
     
-    .generateAnsweredStatement(
-      session,
-      object = activeBtn,
-      verb = "answered",
-      description = gameSet[index,]$question,
-      response = input$ans,
-      interactionType = interactionType,
-      success = success,
-      completion = completion
-    )
+    
     
     if (.gameState == "win") {
-      .generateStatement(session, object = "game", verb = "completed", 
-                         description = "Player has won the game.")
+      
       confirmSweetAlert(
         session = session,
         inputId = "endGame",
@@ -682,8 +630,7 @@ server <- function(input, output, session) {
         btn_labels = "Start Over"
       )
     } else if (.gameState == "lose") {
-      .generateStatement(session, object = "game", verb = "completed", 
-                         description = "Player has lost the game.")
+      
       confirmSweetAlert(
         session = session,
         inputId = "endGame",
@@ -692,8 +639,7 @@ server <- function(input, output, session) {
         btn_labels = "Start Over"
       )
     } else if (.gameState == "draw") {
-      .generateStatement(session, object = "game", verb = "completed", 
-                         description = "Game has ended in a draw.")
+      
       confirmSweetAlert(
         session = session,
         inputId = "endGame",
@@ -721,13 +667,11 @@ server <- function(input, output, session) {
         gameProgress <<- TRUE
       }
     }
-    .generateStatement(session, verb = "experienced", 
-                       description = paste0("Navigated to ", input$pages, " tab."))
+    
   }, ignoreInit = TRUE)
   
   observeEvent(input$endGame, {
-    .generateStatement(session, object = "endGame", verb = "interacted", 
-                       description = paste("Game has been reset."))
+    
     .gameReset()
   })
   
@@ -741,8 +685,7 @@ server <- function(input, output, session) {
       opponent <<- "X"
     }
     
-    .generateStatement(session, object = "shinyalert", verb = "interacted", 
-                       description = paste0("User has selected player: ", player))
+    
     
     output$player <- renderUI({
       return(paste0("You are playing as ", player, "."))
