@@ -27,15 +27,16 @@ ui <- list(
     dashboardHeader(
       title = "Time Series Game",
       titleWidth = 250,
-      tags$li(class = "dropdown",
-              tags$a(href='https://shinyapps.science.psu.edu/',
-                     icon("home"))),
+      tags$li(class = "dropdown", actionLink("info", icon("info"))),
       tags$li(
         class = "dropdown",
         tags$a(target = "_blank", icon("comments"),
-        href = "https://pennstate.qualtrics.com/jfe/form/SV_7TLIkFtJEJ7fEPz?appName=[app_repo_name]"
+        href = "https://pennstate.qualtrics.com/jfe/form/SV_7TLIkFtJEJ7fEPz?appName=[Time Series Game]"
         )
-      )
+      ),
+      tags$li(class = "dropdown",
+              tags$a(href='https://shinyapps.science.psu.edu/',
+                     icon("home")))
     ),
     ### Create the sidebar/left navigation menu
     dashboardSidebar(

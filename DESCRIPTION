@@ -1,0 +1,20 @@
+Title: Time Series Game
+ShortName: TS Game
+Date: 2022-06-06
+Lifecycle: experimental
+Authors@R: c(
+    person(given = "Robert", family = "Carey", email = "rpc5102@psu.edu", role = c("aut", "cre")),
+    person(given = "Neil", family = "Hatfield", email = "njh5464@psu.edu", role = c("aut", "cre")),
+    person(given = "Hongyi", family = "Xia", email = "hkx5049@psu.edu", role = c("ctb"))
+  )
+Chapter: Chapter 0
+Description: This app provides a TicTacToe game for everyone to have an evaluation on Time Series knowledge
+LearningObjectives: c(
+    "The student can access various questions to test their understanding on Time Series"
+  )
+DisplayMode: Normal
+URL: https://psu-eberly.shinyapps.io/Time_Series_Game
+BugReports: https://github.com/EducationShinyAppTeam/Time_Series_Game/issues
+License: CC-BY-NC-SA-4.0
+Tags: multilevel
+Type: Shiny
