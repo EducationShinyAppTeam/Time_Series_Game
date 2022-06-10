@@ -1,4 +1,4 @@
-# Personal Introduction App Assignment
+# Time Series Game
 
 ![experimental](https://img.shields.io/badge/lifecycle-experimental-orange)
 ![2022](https://img.shields.io/badge/year-2022-lightgrey)
